@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "gates": [
+    {
+      "name": "test",
+      "command": "python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt pytest && .venv/bin/python -m pytest -q"
+    }
+  ]
+}
