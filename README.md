@@ -20,3 +20,8 @@ pip install -r requirements.txt && flask run
 ```
 
 Then open http://127.0.0.1:5000/ — the page shows the current server time.
+
+## UI smoke
+
+`pip install -r requirements.txt && flask run` → open http://127.0.0.1:5000/ → the server
+time is shown → click **Check health** → live cpu/mem render inline.

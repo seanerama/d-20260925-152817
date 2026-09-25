@@ -19,6 +19,26 @@ def test_index_returns_html_with_server_time():
     assert today in body
 
 
+def test_index_has_check_health_button_and_result_area():
+    client = app.test_client()
+    response = client.get("/")
+    body = response.get_data(as_text=True)
+
+    assert 'id="check-health"' in body
+    assert "Check health" in body
+    assert 'id="health-result"' in body
+    assert "fetch('/health')" in body or 'fetch("/health")' in body
+
+
+def test_index_script_never_uses_innerhtml_for_health_data():
+    client = app.test_client()
+    response = client.get("/")
+    body = response.get_data(as_text=True)
+
+    assert "innerHTML" not in body
+    assert "textContent" in body
+
+
 def test_health_healthy_path_real_psutil():
     client = app.test_client()
     response = client.get("/health")

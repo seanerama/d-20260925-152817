@@ -14,13 +14,51 @@ def index():
 <head>
   <meta charset="utf-8">
   <title>Benchmark D</title>
+  <style>
+    #health-result.ok {{ color: #0a7d2c; }}
+    #health-result.degraded {{ color: #b00020; font-weight: bold; }}
+    #health-result.error {{ color: #b00020; font-style: italic; }}
+  </style>
 </head>
 <body>
   <h1>Benchmark D</h1>
   <p>Current server time (UTC): <span id="server-time">{server_time}</span></p>
 
-  <!-- Stage 3 will add a "Check health" button and its result area here. -->
-  <div id="health-check"></div>
+  <div id="health-check">
+    <button id="check-health">Check health</button>
+    <div id="health-result" aria-live="polite"></div>
+  </div>
+
+  <script>
+    document.getElementById('check-health').addEventListener('click', function () {{
+      var resultEl = document.getElementById('health-result');
+      resultEl.className = '';
+      resultEl.textContent = 'Checking...';
+
+      fetch('/health')
+        .then(function (response) {{
+          return response.json();
+        }})
+        .then(function (data) {{
+          if (data.status === 'ok') {{
+            resultEl.className = 'ok';
+            resultEl.textContent =
+              'status: ok | cpu: ' + data.cpu_percent + '% | mem: ' +
+              data.mem_percent + '% | time: ' + data.time;
+          }} else if (data.status === 'degraded') {{
+            resultEl.className = 'degraded';
+            resultEl.textContent = 'status: degraded | error: ' + data.error;
+          }} else {{
+            resultEl.className = 'error';
+            resultEl.textContent = 'Unexpected health response.';
+          }}
+        }})
+        .catch(function () {{
+          resultEl.className = 'error';
+          resultEl.textContent = 'Error: could not reach /health.';
+        }});
+    }});
+  </script>
 </body>
 </html>
 """
