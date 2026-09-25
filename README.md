@@ -12,3 +12,11 @@ See [`STATUS.md`](STATUS.md) for live runtime state (deployed version, environme
 
 - **slug:** `d-20260925-152817`
 - **images:** `ghcr.io/seanerama/d-20260925-152817`
+
+## Run locally
+
+```
+pip install -r requirements.txt && flask run
+```
+
+Then open http://127.0.0.1:5000/ — the page shows the current server time.
