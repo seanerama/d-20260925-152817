@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from flask import Flask
+import psutil
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -24,6 +25,26 @@ def index():
 </html>
 """
     return html, 200, {"Content-Type": "text/html"}
+
+
+@app.route("/health")
+def health():
+    try:
+        cpu_percent = psutil.cpu_percent()
+        mem_percent = psutil.virtual_memory().percent
+        body = {
+            "status": "ok",
+            "cpu_percent": cpu_percent,
+            "mem_percent": mem_percent,
+            "time": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as exc:
+        app.logger.exception("Health probe failed")
+        body = {
+            "status": "degraded",
+            "error": str(exc) or type(exc).__name__,
+        }
+    return jsonify(body), 200
 
 
 if __name__ == "__main__":
